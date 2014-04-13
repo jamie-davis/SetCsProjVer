@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+// ReSharper disable StringCompareIsCultureSpecific.3
+// ReSharper disable SpecifyACultureInStringConversionExplicitly
 
 namespace SetCsprojVer
 {
@@ -28,13 +32,58 @@ namespace SetCsprojVer
             if (versionSet)
                 return SetVersions(options, output, versionData);
 
-            if (options.IncrementPart == IncrementablePart.None)
+            if (options.IncrementTarget != null)
+                return IncrementVersion(options, output, versionData);
+
+            if (options.Report)
+                return ReportVersions(output, versionData);
+
+            if (options.Get != null)
+                return ReportVersion(options, output, versionData);
+            return 0;
+        }
+
+        private static int ReportVersion(Options options, TextWriter output, List<FileVersion> versionData)
+        {
+            var requiredVersion = TargetToName(options.Get);
+            var version = versionData.SelectMany(f => f.Versions).FirstOrDefault(v => v.Description == requiredVersion);
+            if (version == null)
             {
-                output.WriteLine("Increment can only change build or revision number.");
+                output.WriteLine("No {0} found.", requiredVersion);
                 return -1;
             }
 
-            return IncrementVersion(options, output, versionData);
+            var value = version.Original;
+            output.WriteLine("{0} = {1}", requiredVersion, value);
+
+            if (options.EnvironmentVariableName != null)
+                Environment.SetEnvironmentVariable(options.EnvironmentVariableName, value);
+            return 0;
+        }
+
+        private static int ReportVersions(TextWriter output, List<FileVersion> versionData)
+        {
+            var versions = versionData
+                .SelectMany(f => f.Versions)
+                .Select(v => v.Description)
+                .Distinct();
+
+            foreach (var version in versions)
+            {
+                output.WriteLine("{0}:", version);
+                var versionName = version;
+                var versionNumbers = versionData
+                    .SelectMany(f => f.Versions)
+                    .Where(v => v.Description == versionName)
+                    .Select(v => v.Original)
+                    .Distinct();
+                foreach (var versionNumber in versionNumbers)
+                {
+                    output.WriteLine("    {0}", versionNumber);
+                }
+            }
+
+            return 0;
         }
 
         private static int SetVersions(Options options, TextWriter output, List<FileVersion> versionData)
@@ -54,11 +103,24 @@ namespace SetCsprojVer
                     return rc;
             }
 
+            if (options.EnvironmentVariableName != null)
+            {
+                var firstReplacement = replacements.FirstOrDefault();
+                if (firstReplacement != null)
+                    Environment.SetEnvironmentVariable(options.EnvironmentVariableName, firstReplacement.Version);
+            }
+
             return 0;
         }
 
         private static int IncrementVersion(Options options, TextWriter output, List<FileVersion> versionData)
         {
+            if (options.IncrementPart == IncrementablePart.None)
+            {
+                output.WriteLine("Increment can only change build (b) or revision number (r).");
+                return -1;
+            }
+
             if (!Validator.Check(versionData, output))
             {
                 output.WriteLine();
@@ -102,12 +164,18 @@ namespace SetCsprojVer
                 canon.Revision = "0";
             }
 
-            var versionUpdates = new[] { new VersionUpdate(incrementName, canon) };
+            var versionUpdate = new VersionUpdate(incrementName, canon);
+            var versionUpdates = new[] { versionUpdate };
             foreach (var fileVersion in versionData)
             {
                 var rc = Editor.Edit(versionUpdates, fileVersion.Path, output, options.DryRun);
                 if (rc != 0)
                     return rc;
+            }
+
+            if (options.EnvironmentVariableName != null)
+            {
+                Environment.SetEnvironmentVariable(options.EnvironmentVariableName, versionUpdate.Version);
             }
 
             return 0;
@@ -118,8 +186,11 @@ namespace SetCsprojVer
             if (string.Compare(incrementTarget, "av", true) == 0)
                 return "AssemblyVersion";
 
-            if (string.Compare(incrementTarget, "af", true) == 0)
+            if (string.Compare(incrementTarget, "fv", true) == 0)
                 return "AssemblyFileVersion";
+
+            if (string.Compare(incrementTarget, "iv", true) == 0)
+                return "AssemblyInformationalVersion";
 
             return null;
         }
