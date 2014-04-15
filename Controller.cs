@@ -57,7 +57,7 @@ namespace SetCsprojVer
             output.WriteLine("{0} = {1}", requiredVersion, value);
 
             if (options.EnvironmentVariableName != null)
-                Environment.SetEnvironmentVariable(options.EnvironmentVariableName, value);
+                Environment.SetEnvironmentVariable(options.EnvironmentVariableName, value, EnvironmentVariableTarget.User);
             return 0;
         }
 
@@ -107,7 +107,7 @@ namespace SetCsprojVer
             {
                 var firstReplacement = replacements.FirstOrDefault();
                 if (firstReplacement != null)
-                    Environment.SetEnvironmentVariable(options.EnvironmentVariableName, firstReplacement.Version);
+                    Environment.SetEnvironmentVariable(options.EnvironmentVariableName, firstReplacement.Version, EnvironmentVariableTarget.User);
             }
 
             return 0;
@@ -175,7 +175,8 @@ namespace SetCsprojVer
 
             if (options.EnvironmentVariableName != null)
             {
-                Environment.SetEnvironmentVariable(options.EnvironmentVariableName, versionUpdate.Version);
+                Environment.SetEnvironmentVariable(options.EnvironmentVariableName, versionUpdate.Version, EnvironmentVariableTarget.User);
+                
             }
 
             return 0;
