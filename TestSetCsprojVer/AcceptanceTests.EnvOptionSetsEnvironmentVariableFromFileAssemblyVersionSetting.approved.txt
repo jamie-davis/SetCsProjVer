@@ -1,0 +1,35 @@
+﻿Command Line Arguments: ".\TestFiles\MatchedVersions" /AV:1.2.3.4 /env:variable
+
+.\TestFiles\MatchedVersions\Proj1\AssemblyInfo.cs
+Replacing:
+    [assembly: AssemblyVersion("1.0.0.0")]
+with
+    [assembly: AssemblyVersion("1.2.3.4")]
+.\TestFiles\MatchedVersions\Proj2\AssemblyInfo.cs
+Replacing:
+    [assembly: AssemblyVersion("1.0.0.0")]
+with
+    [assembly: AssemblyVersion("1.2.3.4")]
+.\TestFiles\MatchedVersions\Proj3\AssemblyInfo.cs
+Replacing:
+    [assembly: AssemblyVersion("1.0.0.0")]
+with
+    [assembly: AssemblyVersion("1.2.3.4")]
+.\TestFiles\MatchedVersions\AssemblyInfo.cs
+Adding:
+    [assembly: AssemblyVersion("1.2.3.4")]
+
+Environment variable: variable = 1.2.3.4
+
+File Versions after run:
+    .\TestFiles\MatchedVersions\Proj1\AssemblyInfo.cs
+        [assembly: AssemblyVersion("1.2.3.4")]
+        [assembly: AssemblyFileVersion("1.0.0.0")]
+    .\TestFiles\MatchedVersions\Proj2\AssemblyInfo.cs
+        [assembly: AssemblyVersion("1.2.3.4")]
+        [assembly: AssemblyFileVersion("1.0.0.0")]
+    .\TestFiles\MatchedVersions\Proj3\AssemblyInfo.cs
+        [assembly: AssemblyVersion("1.2.3.4")]
+        [assembly: AssemblyFileVersion("1.0.0.0")]
+    .\TestFiles\MatchedVersions\AssemblyInfo.cs
+        [assembly: AssemblyVersion("1.2.3.4")]

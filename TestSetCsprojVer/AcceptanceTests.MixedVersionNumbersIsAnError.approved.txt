@@ -1,0 +1,38 @@
+﻿Command Line Arguments: ".\TestFiles\NonUniqueVersions" /inc:FV,r
+
+Inconsistent versions detected.
+AssemblyVersion
+    1.1.1.0
+        .\TestFiles\NonUniqueVersions\Proj1\AssemblyInfo.cs
+    1.1.2.0
+        .\TestFiles\NonUniqueVersions\Proj2\AssemblyInfo.cs
+    1.1.3.0
+        .\TestFiles\NonUniqueVersions\Proj3\AssemblyInfo.cs
+    1.1.0.0
+        .\TestFiles\NonUniqueVersions\AssemblyInfo.cs
+AssemblyFileVersion
+    2.1.1.0
+        .\TestFiles\NonUniqueVersions\Proj1\AssemblyInfo.cs
+    1.1.2.0
+        .\TestFiles\NonUniqueVersions\Proj2\AssemblyInfo.cs
+    1.1.3.0
+        .\TestFiles\NonUniqueVersions\Proj3\AssemblyInfo.cs
+    1.1.0.0
+        .\TestFiles\NonUniqueVersions\AssemblyInfo.cs
+
+All versions must be made consistent before they can be edited.
+
+File Versions after run:
+    .\TestFiles\NonUniqueVersions\Proj1\AssemblyInfo.cs
+        [assembly: AssemblyVersion("1.1.1.0")]
+        [assembly: AssemblyFileVersion("2.1.1.0")]
+    .\TestFiles\NonUniqueVersions\Proj2\AssemblyInfo.cs
+        [assembly: AssemblyVersion("1.1.2.0")]
+        [assembly: AssemblyFileVersion("1.1.2.0")]
+        [assembly: AssemblyInformationalVersion("info 1")]
+    .\TestFiles\NonUniqueVersions\Proj3\AssemblyInfo.cs
+        [assembly: AssemblyVersion("1.1.3.0")]
+        [assembly: AssemblyFileVersion("1.1.3.0")]
+    .\TestFiles\NonUniqueVersions\AssemblyInfo.cs
+        [assembly: AssemblyVersion("1.1.0.0")]
+        [assembly: AssemblyFileVersion("1.1.0.0")]
